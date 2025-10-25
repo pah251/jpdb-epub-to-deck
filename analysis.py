@@ -75,11 +75,13 @@ if __name__ == "__main__":
     try:
         book_text = get_text_from_epub(epub_file_to_test)
         print(f"successfully read {len(book_text)} characters")
-        print("\n------ start of first 500 chars -------")
-        print(book_text[:500])
-        print("------- end of test ------")
-        tokenized_text = my_cpp_module.tokenize_text(book_text)
-        print(tokenized_text[:500])
+
+        word_counts = my_cpp_module.unique_word_count(book_text)
+        sorted_words = sorted(word_counts.items(), key=lambda item: item[1], reverse=True)
+
+        for word, count in sorted_words[:50]:
+            print(f"{word.ljust(50)} : {count}")
+
     except FileNotFoundError: 
         print(f"Error: File not found at {epub_file_to_test}")
     except zipfile.BadZipFile:
