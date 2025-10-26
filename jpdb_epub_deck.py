@@ -70,6 +70,7 @@ def get_text_from_epub(epub_path):
     """
     Function to open an epub file, find all .xhtml content, and return as a single string.
     """
+    print(f"\nAttempting to read epub: {epub_path}")
 
     parser = EpubTextExtractor()
 
@@ -216,13 +217,13 @@ def jpdb_list_user_decks(api_key):
 
 
 def create_new_deck_from_epub(deck_name, epub_file, deck_position):
-    print(f"Attempting to create new deck: {deck_name}")
+    # Create the new deck
     deck_id = create_jpdb_deck(JPDB_API_KEY, deck_name, deck_position)
     if not deck_id:
         print("Error: failed to create deck, exiting.")
         sys.exit(1)
 
-    print(f"\nAttempting to read epub: {epub_file}")
+    
     book_text = get_text_from_epub(epub_file)
     print(f"successfully read {len(book_text)} characters")
 
@@ -279,12 +280,47 @@ def process_directory_of_epubs(epub_directory):
     # Get the list of decks, we'll skip over any that have the same name.
     decks = jpdb_list_user_decks(JPDB_API_KEY)
 
-
     # Get list of all .epub files
     epub_files = glob.glob(os.path.join(epub_directory, "*.epub"))
+    print("Found these files for processing: ")
+    for file in epub_files:
+        print(os.path.basename(file))
+    
+    results = []
 
+    # Process each file
+    for file in epub_files:
+        deck_name = os.path.basename(file)
+        deck_name = os.path.splitext(deck_name)[0]
+        deck_position = 0
 
+        # Check if a deck with the same name already exists.
+        skip = False
+        for deck in decks:
+            if deck_name == deck[1]:
+                print(f"Found deck with name: {deck[1]} and ID:{deck[0]}, skipping this file.")
+                skip = True
+            
+        if not skip:            
+            try:
+                new_deck_data = create_new_deck_from_epub(deck_name, file, deck_position)
+                if new_deck_data:
+                    results.append(new_deck_data)
+                else:
+                    print("ERROR: Script failed to create new deck successfully!")
 
+            except FileNotFoundError: 
+                print(f"Error: File not found at {file}")
+            except zipfile.BadZipFile:
+                print(f"Error: ZipFile could not read {file}")
+            except RuntimeError as e:
+                print(f"A C++ runtime error ocurred: {e}")
+    
+    print("================ RESULTS ================")
+    for result in results:
+        print(f"Successfully created new deck: {result[1]} with ID: {result[0]}")
+        print(f"Total unique words added: {result[2]}")
+        print(f"Current user coverage of words: {result[3]:.2f}%")
 
 
 if __name__ == "__main__":
@@ -317,6 +353,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     epub_path = args.epub_path
 
+    # First, check if we are processing a directory or not.
     if args.dir:
         print(f"Parse directory flag set, attempting to process provided folder {epub_path}.")
         if os.path.isdir(epub_path):
@@ -325,7 +362,7 @@ if __name__ == "__main__":
             print(f"ERROR: Provided filepath was NOT a folder.")
             print("If you are trying to parse a single file, remove the -d flag.")
             sys.exit(1)
-    else:
+    else: # Process the single file
         deck_name = args.deck_name
         deck_position = args.deck_position
 
@@ -344,6 +381,7 @@ if __name__ == "__main__":
             print(f"Epub file: {epub_path}")
             print(f"Deck name: {deck_name}")
             print("----------------------")
+
             try:
                 new_deck_data = create_new_deck_from_epub(deck_name, epub_path, deck_position)
                 if new_deck_data:
@@ -360,4 +398,5 @@ if __name__ == "__main__":
             except RuntimeError as e:
                 print(f"A C++ runtime error ocurred: {e}")
     
+    print("================ END OF SCRIPT ================")
 
