@@ -38,7 +38,7 @@ else()
 endif()
 
 # --- Build Our Module ---
-pybind11_add_module(my_cpp_module main.cpp)
+pybind11_add_module(jp_epub_parser main.cpp)
 
 # 7. Link our module to the MeCab library
-target_link_libraries(my_cpp_module PRIVATE ${MECAB_LIBRARY})
+target_link_libraries(jp_epub_parser PRIVATE ${MECAB_LIBRARY})

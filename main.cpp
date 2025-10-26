@@ -112,9 +112,9 @@ std::map<std::string, int> unique_word_count(const std::string& text) {
     return word_counts;
 }
 
-PYBIND11_MODULE(my_cpp_module, m)
+PYBIND11_MODULE(jp_epub_parser, m)
 {
-    m.doc() = "A text analysis tool for Japanese ebooks";
+    m.doc() = "A text parser tool for Japanese ebooks";
 
     m.def(
         "unique_word_count",
