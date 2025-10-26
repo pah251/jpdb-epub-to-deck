@@ -35,17 +35,17 @@ MECAB_ROOT=C:/Program Files/MeCab
 JPDB_API_KEY=YOUR_SECRET_API_KEY_GOES_HERE
 
 3. Build c++ module
-# 1. Create a build directory
+ 1. Create a build directory
 mkdir build
 cd build
 
-# 2. Run CMake to generate the Makefile
-# We must pass the path to MeCab directly to CMake.
-# (Update this path if yours is different)
+ 2. Run CMake to generate the Makefile
+ We must pass the path to MeCab directly to CMake.
+ (Update this path if yours is different)
 cmake -G "MinGW Makefiles" -DMECAB_ROOT="C:/Program Files/MeCab" ..
 
-# 3. Run make to compile the C++ code
-# (You may need to use 'mingw32-make' depending on your MinGW version)
+ 3. Run make to compile the C++ code
+ (You may need to use 'mingw32-make' depending on your MinGW version)
 mingw32-make
 
 Usage
