@@ -28,13 +28,10 @@ cd YOUR_REPO
 We use a handy-dandy .env file to handle secret keys and paths.
 Create a file called ".env" in the base folder of the project, include the following:
 
-# Path to your MinGW (or other C++ compiler) bin folder
 MINGW_BIN_PATH=C:/path/to/mingw64/bin
 
-# Path to your root MeCab installation folder
 MECAB_ROOT=C:/Program Files/MeCab
 
-# Your secret API key from your jpdb.io account settings
 JPDB_API_KEY=YOUR_SECRET_API_KEY_GOES_HERE
 
 3. Build c++ module
